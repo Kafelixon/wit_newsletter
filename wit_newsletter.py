@@ -12,20 +12,7 @@ USERNAME = config("USERNAME")
 RECEIVERS = config("RECEIVERS").split(",")
 PASSWORD = config("PASSWORD")
 
-articles = [
-    {
-        "title": "Organizacja zajęć dydaktycznych w semestrze zimowym 2021/2022",
-        "link": "https://ubi2.wit.edu.pl/?table=9&O=O#4438",
-    },
-    {
-        "title": "Wyczerpany limit miejsc na lektoracie języka HISZPAŃSKIEGO",
-        "link": "https://ubi2.wit.edu.pl/?table=9&O=O#4437",
-    },
-    {
-        "title": "LEKTORATY JĘZYKÓW OBCYCH DLA STUDENTÓW Z ZALICZONYM POZIOMEM B2D W SEMESTRZE ZIMOWYM 2021/2022",
-        "link": "https://ubi2.wit.edu.pl/?table=9&O=O#4436",
-    },
-]
+articles = []
 
 
 def scrape():

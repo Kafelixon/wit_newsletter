@@ -11,8 +11,18 @@ SENDER = config("SENDER")
 USERNAME = config("USERNAME")
 RECEIVERS = config("RECEIVERS").split(",")
 PASSWORD = config("PASSWORD")
+ALIAS = config("ALIAS")
 
-articles = []
+articles = [
+    # {
+    #     "title": "Wyczerpany limit miejsc na lektoracie języka HISZPAŃSKIEGO",
+    #     "link": "https://ubi2.wit.edu.pl/?table=9&O=O#4437",
+    # },
+    # {
+    #     "title": "LEKTORATY JĘZYKÓW OBCYCH DLA STUDENTÓW Z ZALICZONYM POZIOMEM B2D W SEMESTRZE ZIMOWYM 2021/2022",
+    #     "link": "https://ubi2.wit.edu.pl/?table=9&O=O#4436",
+    # },
+    ]
 
 
 def scrape():
@@ -32,26 +42,32 @@ def scrape():
         }
         if article not in articles:
             new_articles.append(article)
-            articles.append(article)
 
-    if new_articles != []:
-        print("Website scraped, mail sent")
-        send_mail(new_articles)
+    print("Website scraped")
+    if new_articles != [] and articles != []:
+        send_mail(new_articles,articles)
     else:
-        print("Website scraped, no changes")
+        print("Not sent")
+    for article in new_articles:
+            articles.insert(0, article)
 
 
-def send_mail(articles):
+def send_mail(new_articles,articles):
     html = "<h1>New announcements:</h1><br>"
+    for article in new_articles:
+        html += "<a href='" + article["link"] + "'>" + article["title"] + "</a><br>"
+    html += "<h1>Older announcements:</h1><br>"
     for article in articles:
         html += "<a href='" + article["link"] + "'>" + article["title"] + "</a><br>"
+    
+    
     message = MIMEText(
         html,
         "html",
     )
 
     message["Subject"] = "WIT Newsletter"
-    message["From"] = SENDER
+    message["From"] = "WIT Newsletter <" + ALIAS +">"
     message["To"] = ", ".join(RECEIVERS)
 
     context = ssl.create_default_context()
@@ -59,7 +75,7 @@ def send_mail(articles):
     with smtplib.SMTP_SSL(SMTP_SERVER, PORT, context=context) as server:
         server.login(USERNAME, PASSWORD)
         server.sendmail(SENDER, RECEIVERS, message.as_string())
-
+        print("Mail sent")
 
 if __name__ == "__main__":
     print("Server started")
